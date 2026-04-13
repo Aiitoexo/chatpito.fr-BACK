@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\Admin\VariantSupplierController;
 use App\Http\Controllers\Api\Admin\ImageUploadController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\CouponController;
+use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\ShippingController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\UserController;
@@ -39,6 +40,7 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/featured', [ProductController::class, 'featured']);
 Route::get('/products/{slug}', [ProductController::class, 'show']);
 Route::get('/products/{product}/variants', [VariantController::class, 'index']);
+Route::get('/products/{slug}/reviews', [ReviewController::class, 'index']);
 
 // Stripe webhook (sans middleware auth — Stripe appelle directement)
 Route::post('/webhooks/stripe', [StripeWebhookController::class, 'handle']);
@@ -83,6 +85,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Factures
     Route::get('/invoices/{id}/download', [InvoiceController::class, 'download']);
+
+    // Reviews
+    Route::post('/products/{slug}/reviews', [ReviewController::class, 'store']);
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 });
 
 // Admin routes
@@ -125,4 +131,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     // Image upload
     Route::post('/upload', [ImageUploadController::class, 'upload']);
     Route::delete('/upload', [ImageUploadController::class, 'delete']);
+
+    // Reviews moderation
+    Route::get('/reviews', [ReviewController::class, 'adminIndex']);
+    Route::patch('/reviews/{id}/approve', [ReviewController::class, 'approve']);
+    Route::delete('/reviews/{id}', [ReviewController::class, 'adminDestroy']);
 });

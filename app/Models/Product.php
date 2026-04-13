@@ -57,6 +57,11 @@ class Product extends Model
         return $this->hasOne(NutritionalInfo::class, 'produit_id');
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function scopeActif($query)
     {
         return $query->where('actif', true);
