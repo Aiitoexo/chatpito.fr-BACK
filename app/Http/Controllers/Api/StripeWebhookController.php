@@ -8,6 +8,7 @@ use App\Jobs\SendOrderConfirmationJob;
 use App\Models\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Stripe\Webhook;
 
 class StripeWebhookController extends Controller
@@ -38,7 +39,13 @@ class StripeWebhookController extends Controller
 
     private function handlePaymentSuccess(object $paymentIntent): void
     {
-        $order = Order::where('stripe_payment_intent_id', $paymentIntent->id)->firstOrFail();
+        $order = Order::where('stripe_payment_intent_id', $paymentIntent->id)->first();
+
+        if (!$order) {
+            Log::warning("Stripe webhook: order not found for payment_intent {$paymentIntent->id}");
+            return;
+        }
+
         $order->update(['status' => 'paid']);
 
         GenerateInvoiceJob::dispatch($order);
