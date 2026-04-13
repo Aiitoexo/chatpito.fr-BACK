@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Admin\StockController;
 use App\Http\Controllers\Api\Admin\VariantSupplierController;
 use App\Http\Controllers\Api\Admin\ImageUploadController;
 use App\Http\Controllers\Api\CheckoutController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\StripeWebhookController;
 
@@ -55,6 +56,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::post('/auth/verify-email', [AuthController::class, 'verifyEmail']);
+
+    // User stats
+    Route::get('/user/stats', [UserController::class, 'stats']);
 
     Route::get('/orders', [OrderController::class, 'index']);
     Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus']);
