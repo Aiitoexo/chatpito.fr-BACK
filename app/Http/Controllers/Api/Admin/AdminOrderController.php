@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\OrderShippedMail;
 use App\Models\Order;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -40,6 +41,7 @@ class AdminOrderController extends Controller
         ]);
 
         $order = Order::findOrFail($id);
+        $oldStatus = $order->status;
 
         $updateData = ['status' => $validated['status']];
 
@@ -50,6 +52,8 @@ class AdminOrderController extends Controller
         }
 
         $order->update($updateData);
+
+        ActivityLogger::log('status_changed', $order, ['status' => $oldStatus], ['status' => $validated['status']]);
 
         if ($validated['status'] === 'shipped') {
             Mail::to($order->shipping_email)->queue(new OrderShippedMail($order));
