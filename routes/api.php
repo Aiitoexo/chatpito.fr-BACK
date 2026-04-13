@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\Admin\VariantSupplierController;
 use App\Http\Controllers\Api\Admin\ImageUploadController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\CouponController;
+use App\Http\Controllers\Api\WishlistController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\ShippingController;
 use App\Http\Controllers\Api\CheckoutController;
@@ -89,6 +90,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Reviews
     Route::post('/products/{slug}/reviews', [ReviewController::class, 'store']);
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
+
+    // Wishlist
+    Route::get('/user/wishlist', [WishlistController::class, 'index']);
+    Route::post('/user/wishlist/{productId}', [WishlistController::class, 'toggle']);
+    Route::delete('/user/wishlist/{productId}', [WishlistController::class, 'destroy']);
 });
 
 // Admin routes
