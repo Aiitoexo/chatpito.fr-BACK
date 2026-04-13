@@ -11,7 +11,7 @@ class Order extends Model
 {
     protected $fillable = [
         'user_id', 'status', 'tracking_number', 'carrier', 'shipped_at',
-        'total', 'subtotal_ht', 'tax_amount',
+        'total', 'subtotal_ht', 'tax_amount', 'coupon_id', 'discount_amount',
         'shipping_name', 'shipping_email',
         'shipping_address', 'shipping_city', 'shipping_zip',
         'stripe_session_id', 'stripe_payment_intent_id'
