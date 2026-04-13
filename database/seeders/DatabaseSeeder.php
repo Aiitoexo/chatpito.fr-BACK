@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AdminSeeder::class,
+            TaxRateSeeder::class,
             ProductSeeder::class,
         ]);
     }

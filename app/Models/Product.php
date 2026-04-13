@@ -13,7 +13,7 @@ class Product extends Model
     protected $fillable = [
         'name', 'slug', 'description', 'description_courte', 'description_longue',
         'marque', 'price', 'image', 'stock', 'featured', 'actif',
-        'meta_title', 'meta_description', 'category_id',
+        'meta_title', 'meta_description', 'category_id', 'tax_rate_id',
     ];
 
     protected $casts = [
@@ -25,6 +25,11 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function taxRate(): BelongsTo
+    {
+        return $this->belongsTo(TaxRate::class);
     }
 
     public function variants(): HasMany
