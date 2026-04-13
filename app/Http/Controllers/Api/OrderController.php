@@ -58,7 +58,16 @@ class OrderController extends Controller
 
     public function show(string $id)
     {
-        $order = Order::with(['items.variant.product'])->findOrFail($id);
+        $order = Order::with(['items.variant.product', 'invoice'])->findOrFail($id);
+        return response()->json($order);
+    }
+
+    public function byPaymentIntent(string $paymentIntent)
+    {
+        $order = Order::with(['items.variant.product'])
+            ->where('stripe_payment_intent_id', $paymentIntent)
+            ->firstOrFail();
+
         return response()->json($order);
     }
 

@@ -48,6 +48,7 @@ Route::post('/checkout/payment-intent', [CheckoutController::class, 'createPayme
 Route::post('/orders', [OrderController::class, 'store']);
 Route::post('/orders/webhook', [OrderController::class, 'webhook']);
 Route::get('/orders/by-email', [OrderController::class, 'byEmail']);
+Route::get('/orders/by-payment-intent/{paymentIntent}', [OrderController::class, 'byPaymentIntent']);
 Route::get('/orders/{id}', [OrderController::class, 'show']);
 
 // Protected routes
