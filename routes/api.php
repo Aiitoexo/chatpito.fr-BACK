@@ -117,6 +117,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/invoices/{id}/download', [InvoiceController::class, 'download']);
 
     // Reviews
+    Route::get('/user/reviews', [ReviewController::class, 'myReviews']);
     Route::post('/products/{slug}/reviews', [ReviewController::class, 'store']);
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 
