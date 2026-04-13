@@ -11,7 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Product extends Model
 {
     protected $fillable = [
-        'name', 'slug', 'description', 'description_courte', 'description_longue',
+        'name', 'slug', 'description', 'date_type', 'shelf_life',
+        'description_courte', 'description_longue',
         'marque', 'price', 'image', 'stock', 'featured', 'actif',
         'meta_title', 'meta_description', 'category_id', 'tax_rate_id',
     ];
