@@ -10,7 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Order extends Model
 {
     protected $fillable = [
-        'user_id', 'status', 'total', 'subtotal_ht', 'tax_amount',
+        'user_id', 'status', 'tracking_number', 'carrier', 'shipped_at',
+        'total', 'subtotal_ht', 'tax_amount',
         'shipping_name', 'shipping_email',
         'shipping_address', 'shipping_city', 'shipping_zip',
         'stripe_session_id', 'stripe_payment_intent_id'
@@ -20,6 +21,7 @@ class Order extends Model
         'total' => 'decimal:2',
         'subtotal_ht' => 'decimal:2',
         'tax_amount' => 'decimal:2',
+        'shipped_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
