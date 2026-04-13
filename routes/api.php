@@ -57,8 +57,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::post('/auth/verify-email', [AuthController::class, 'verifyEmail']);
 
-    // User stats
+    // User
     Route::get('/user/stats', [UserController::class, 'stats']);
+    Route::patch('/user/profile', [UserController::class, 'updateProfile']);
 
     Route::get('/orders', [OrderController::class, 'index']);
     Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus']);
