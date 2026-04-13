@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\WishlistController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\StockAlertController;
 use App\Http\Controllers\Api\ShippingController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\UserController;
@@ -42,6 +43,7 @@ Route::get('/products/featured', [ProductController::class, 'featured']);
 Route::get('/products/{slug}', [ProductController::class, 'show']);
 Route::get('/products/{product}/variants', [VariantController::class, 'index']);
 Route::get('/products/{slug}/reviews', [ReviewController::class, 'index']);
+Route::post('/products/stock-alert', [StockAlertController::class, 'subscribe']);
 
 // Stripe webhook (sans middleware auth — Stripe appelle directement)
 Route::post('/webhooks/stripe', [StripeWebhookController::class, 'handle']);
