@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\SendLowStockAlertJob;
 use App\Models\Stock;
 use App\Models\StockMovement;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +42,10 @@ class StockService
             $stock->save();
 
             $this->createMovement($variantId, 'vente', -$quantity, $stockAvant, $stock->quantite_disponible, $referenceType, $referenceId, 'Vente confirmée');
+
+            if ($stock->quantite_disponible <= $stock->seuil_alerte) {
+                SendLowStockAlertJob::dispatch($stock);
+            }
         });
     }
 
@@ -65,6 +70,10 @@ class StockService
             $stock->save();
 
             $this->createMovement($variantId, 'correction', $diff, $stockAvant, $newQuantity, null, null, $commentaire);
+
+            if ($stock->quantite_disponible <= $stock->seuil_alerte) {
+                SendLowStockAlertJob::dispatch($stock);
+            }
         });
     }
 
