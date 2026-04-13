@@ -156,4 +156,11 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::get('/reviews', [ReviewController::class, 'adminIndex']);
     Route::patch('/reviews/{id}/approve', [ReviewController::class, 'approve']);
     Route::delete('/reviews/{id}', [ReviewController::class, 'adminDestroy']);
+
+    // Coupons CRUD
+    Route::get('/coupons', [Admin\AdminCouponController::class, 'index']);
+    Route::post('/coupons', [Admin\AdminCouponController::class, 'store']);
+    Route::put('/coupons/{id}', [Admin\AdminCouponController::class, 'update']);
+    Route::delete('/coupons/{id}', [Admin\AdminCouponController::class, 'destroy']);
+    Route::patch('/coupons/{id}/toggle', [Admin\AdminCouponController::class, 'toggle']);
 });
