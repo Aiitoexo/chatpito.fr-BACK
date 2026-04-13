@@ -54,6 +54,21 @@ Route::post('/coupons/apply', [CouponController::class, 'apply']);
 // Shipping — calcul frais de port
 Route::post('/shipping/calculate', [ShippingController::class, 'calculate']);
 
+// Returns — demande client
+Route::post('/returns', function (\Illuminate\Http\Request $request) {
+    $validated = $request->validate([
+        'order_id' => 'required|exists:orders,id',
+        'email' => 'required|email',
+        'reason' => 'required|string|max:1000',
+    ]);
+    $return = \App\Models\ReturnRequest::create([
+        'order_id' => $validated['order_id'],
+        'customer_email' => $validated['email'],
+        'reason' => $validated['reason'],
+    ]);
+    return response()->json(['data' => $return], 201);
+});
+
 // Checkout
 Route::post('/checkout/save-cart', function (\Illuminate\Http\Request $request) {
     $validated = $request->validate([
@@ -160,6 +175,13 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
     // Activity logs
     Route::get('/logs', [Admin\ActivityLogController::class, 'index']);
+
+    // SAV / Returns
+    Route::get('/returns', [Admin\AdminReturnController::class, 'index']);
+    Route::get('/returns/{id}', [Admin\AdminReturnController::class, 'show']);
+    Route::patch('/returns/{id}/approve', [Admin\AdminReturnController::class, 'approve']);
+    Route::patch('/returns/{id}/reject', [Admin\AdminReturnController::class, 'reject']);
+    Route::post('/returns/{id}/refund', [Admin\AdminReturnController::class, 'refund']);
 
     // Reports
     Route::get('/reports/sales', [Admin\ReportController::class, 'sales']);
