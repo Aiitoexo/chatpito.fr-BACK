@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Admin\StockController;
 use App\Http\Controllers\Api\Admin\VariantSupplierController;
 use App\Http\Controllers\Api\Admin\ImageUploadController;
 use App\Http\Controllers\Api\CheckoutController;
+use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\StripeWebhookController;
 
 // Auth routes
@@ -54,6 +55,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/orders', [OrderController::class, 'index']);
     Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+
+    // Factures
+    Route::get('/invoices/{id}/download', [InvoiceController::class, 'download']);
 });
 
 // Admin routes
