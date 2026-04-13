@@ -158,6 +158,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::patch('/reviews/{id}/approve', [ReviewController::class, 'approve']);
     Route::delete('/reviews/{id}', [ReviewController::class, 'adminDestroy']);
 
+    // Activity logs
+    Route::get('/logs', [Admin\ActivityLogController::class, 'index']);
+
     // Reports
     Route::get('/reports/sales', [Admin\ReportController::class, 'sales']);
     Route::get('/reports/products', [Admin\ReportController::class, 'products']);
