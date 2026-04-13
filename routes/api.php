@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\Admin\AdminTagController;
 use App\Http\Controllers\Api\Admin\StockController;
 use App\Http\Controllers\Api\Admin\VariantSupplierController;
 use App\Http\Controllers\Api\Admin\ImageUploadController;
+use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\InvoiceController;
@@ -60,6 +61,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // User
     Route::get('/user/stats', [UserController::class, 'stats']);
     Route::patch('/user/profile', [UserController::class, 'updateProfile']);
+
+    // Addresses
+    Route::get('/user/addresses', [AddressController::class, 'index']);
+    Route::post('/user/addresses', [AddressController::class, 'store']);
+    Route::put('/user/addresses/{id}', [AddressController::class, 'update']);
+    Route::delete('/user/addresses/{id}', [AddressController::class, 'destroy']);
+    Route::patch('/user/addresses/{id}/default', [AddressController::class, 'setDefault']);
 
     Route::get('/orders', [OrderController::class, 'index']);
     Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus']);
