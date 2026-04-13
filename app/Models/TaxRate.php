@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class TaxRate extends Model
+{
+    protected $fillable = ['name', 'rate', 'country_code', 'description', 'is_default'];
+
+    protected $casts = [
+        'rate' => 'decimal:2',
+        'is_default' => 'boolean',
+    ];
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function getRateMultiplierAttribute(): float
+    {
+        return 1 + ($this->rate / 100);
+    }
+}
