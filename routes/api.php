@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\Admin\AdminTagController;
 use App\Http\Controllers\Api\Admin\StockController;
 use App\Http\Controllers\Api\Admin\VariantSupplierController;
 use App\Http\Controllers\Api\Admin\ImageUploadController;
+use App\Http\Controllers\Api\StripeWebhookController;
 
 // Auth routes
 Route::post('/auth/register', [AuthController::class, 'register']);
@@ -30,6 +31,9 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/featured', [ProductController::class, 'featured']);
 Route::get('/products/{slug}', [ProductController::class, 'show']);
 Route::get('/products/{product}/variants', [VariantController::class, 'index']);
+
+// Stripe webhook (sans middleware auth — Stripe appelle directement)
+Route::post('/webhooks/stripe', [StripeWebhookController::class, 'handle']);
 
 // Orders (public for guest checkout)
 Route::post('/orders', [OrderController::class, 'store']);

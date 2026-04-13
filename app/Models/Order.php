@@ -12,7 +12,8 @@ class Order extends Model
     protected $fillable = [
         'user_id', 'status', 'total', 'subtotal_ht', 'tax_amount',
         'shipping_name', 'shipping_email',
-        'shipping_address', 'shipping_city', 'shipping_zip', 'stripe_session_id'
+        'shipping_address', 'shipping_city', 'shipping_zip',
+        'stripe_session_id', 'stripe_payment_intent_id'
     ];
 
     protected $casts = [
