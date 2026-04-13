@@ -63,6 +63,16 @@ class ReviewController extends Controller
         return response()->json(['data' => $review->load('user:id,name')], 201);
     }
 
+    public function myReviews(Request $request): JsonResponse
+    {
+        $reviews = Review::where('user_id', $request->user()->id)
+            ->with(['product:id,name,slug', 'order:id'])
+            ->latest()
+            ->get();
+
+        return response()->json(['data' => $reviews]);
+    }
+
     public function destroy(Request $request, string $id): JsonResponse
     {
         $review = Review::where('user_id', $request->user()->id)->findOrFail($id);
