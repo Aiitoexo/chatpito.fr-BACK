@@ -24,6 +24,8 @@ use App\Http\Controllers\Api\StripeWebhookController;
 // Auth routes
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
+Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
 // Public routes
 Route::get('/categories', [CategoryController::class, 'index']);
@@ -52,6 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/verify-email', [AuthController::class, 'verifyEmail']);
 
     Route::get('/orders', [OrderController::class, 'index']);
     Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus']);
