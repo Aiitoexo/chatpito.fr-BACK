@@ -145,6 +145,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
     // Orders management
     Route::get('/orders', [AdminOrderController::class, 'index']);
+    Route::get('/orders/export', [AdminOrderController::class, 'export']);
     Route::get('/orders/{id}', [AdminOrderController::class, 'show']);
     Route::patch('/orders/{id}/status', [AdminOrderController::class, 'updateStatus']);
 
