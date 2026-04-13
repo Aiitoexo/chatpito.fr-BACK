@@ -7,6 +7,7 @@ use App\Mail\OrderShippedMail;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminOrderController extends Controller
 {
@@ -55,5 +56,47 @@ class AdminOrderController extends Controller
         }
 
         return response()->json($order->load(['items.variant.product', 'user']));
+    }
+
+    public function export(Request $request): StreamedResponse
+    {
+        $validated = $request->validate([
+            'from' => 'required|date',
+            'to' => 'required|date',
+            'status' => 'nullable|string',
+        ]);
+
+        $orders = Order::with(['items.variant.product', 'user'])
+            ->whereBetween('created_at', [$validated['from'], $validated['to'] . ' 23:59:59'])
+            ->when($validated['status'] ?? null, fn ($q, $s) => $q->where('status', $s))
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $headers = ['N° commande', 'Date', 'Client', 'Email', 'Statut', 'Montant HT', 'TVA', 'Total TTC', 'Livraison', 'N° suivi'];
+
+        return response()->streamDownload(function () use ($orders, $headers) {
+            $out = fopen('php://output', 'w');
+            fprintf($out, chr(0xEF) . chr(0xBB) . chr(0xBF));
+            fputcsv($out, $headers, ';');
+
+            foreach ($orders as $order) {
+                fputcsv($out, [
+                    $order->id,
+                    $order->created_at->format('d/m/Y'),
+                    $order->user?->name ?? $order->shipping_name,
+                    $order->user?->email ?? $order->shipping_email,
+                    $order->status,
+                    number_format($order->subtotal_ht, 2, ',', ''),
+                    number_format($order->tax_amount, 2, ',', ''),
+                    number_format($order->total, 2, ',', ''),
+                    $order->carrier ?? '',
+                    $order->tracking_number ?? '',
+                ], ';');
+            }
+
+            fclose($out);
+        }, 'commandes.csv', [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
     }
 }
