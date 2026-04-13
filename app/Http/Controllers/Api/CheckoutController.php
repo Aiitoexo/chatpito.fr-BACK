@@ -28,16 +28,27 @@ class CheckoutController extends Controller
             'shipping.address' => 'required|string',
             'shipping.city' => 'required|string',
             'shipping.zip' => 'required|string',
+            'shipping_method_id' => 'nullable|exists:shipping_methods,id',
+            'shipping_cost' => 'nullable|numeric|min:0',
         ]);
 
         $validated['user_id'] = $request->user()?->id;
 
         $order = $this->orderService->createOrder($validated);
 
+        $shippingCost = $validated['shipping_cost'] ?? 0;
+
+        $order->update([
+            'shipping_cost' => $shippingCost,
+            'shipping_method_id' => $validated['shipping_method_id'] ?? null,
+        ]);
+
+        $totalWithShipping = $order->total + $shippingCost;
+
         $stripe = new StripeClient(config('services.stripe.secret'));
 
         $intent = $stripe->paymentIntents->create([
-            'amount' => (int) ($order->total * 100),
+            'amount' => (int) round($totalWithShipping * 100),
             'currency' => 'eur',
             'metadata' => ['order_id' => $order->id],
         ]);
