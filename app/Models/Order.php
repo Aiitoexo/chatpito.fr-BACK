@@ -10,12 +10,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Order extends Model
 {
     protected $fillable = [
-        'user_id', 'status', 'total', 'shipping_name', 'shipping_email',
+        'user_id', 'status', 'total', 'subtotal_ht', 'tax_amount',
+        'shipping_name', 'shipping_email',
         'shipping_address', 'shipping_city', 'shipping_zip', 'stripe_session_id'
     ];
 
     protected $casts = [
         'total' => 'decimal:2',
+        'subtotal_ht' => 'decimal:2',
+        'tax_amount' => 'decimal:2',
     ];
 
     public function user(): BelongsTo

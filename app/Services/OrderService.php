@@ -25,11 +25,16 @@ class OrderService
                 }
             }
 
+            // Calculer les totaux HT/TVA/TTC
+            $totals = $this->calculateTotals($validated['items']);
+
             // Créer la commande
             $order = Order::create([
                 'user_id' => $validated['user_id'] ?? null,
                 'status' => 'pending',
-                'total' => $validated['total'],
+                'total' => $totals['total_ttc'],
+                'subtotal_ht' => $totals['subtotal_ht'],
+                'tax_amount' => $totals['tax_amount'],
                 'shipping_name' => $validated['shipping']['name'] ?? null,
                 'shipping_email' => $validated['shipping']['email'] ?? null,
                 'shipping_address' => $validated['shipping']['address'] ?? null,
@@ -57,5 +62,28 @@ class OrderService
 
             return $order->load('items.variant.product');
         });
+    }
+
+    private function calculateTotals(array $items): array
+    {
+        $subtotalHT = 0;
+        $taxAmount = 0;
+
+        foreach ($items as $item) {
+            $variant = Variant::with('product.taxRate')->findOrFail($item['variant_id']);
+            $rate = $variant->taux_tva ?? $variant->product->taxRate?->rate ?? 20.00;
+            $priceTTC = $item['price'] ?? $variant->prix_vente_ttc;
+            $lineHT = $priceTTC / (1 + $rate / 100) * $item['quantity'];
+            $lineTax = ($priceTTC * $item['quantity']) - $lineHT;
+
+            $subtotalHT += $lineHT;
+            $taxAmount += $lineTax;
+        }
+
+        return [
+            'subtotal_ht' => round($subtotalHT, 2),
+            'tax_amount' => round($taxAmount, 2),
+            'total_ttc' => round($subtotalHT + $taxAmount, 2),
+        ];
     }
 }
