@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -13,10 +14,15 @@ class UserController extends Controller
     {
         $user = $request->user();
 
-        $ordersCount = $user->orders()->count();
-        $totalSpent = $user->orders()->where('status', 'paid')->sum('total');
+        $userOrders = Order::where(function ($q) use ($user) {
+            $q->where('user_id', $user->id)
+              ->orWhere('shipping_email', $user->email);
+        });
 
-        $favoriteProduct = $user->orders()
+        $ordersCount = (clone $userOrders)->count();
+        $totalSpent = (clone $userOrders)->where('status', 'paid')->sum('total');
+
+        $favoriteProduct = (clone $userOrders)
             ->where('status', 'paid')
             ->with('items')
             ->get()
@@ -27,7 +33,7 @@ class UserController extends Controller
             ->keys()
             ->first();
 
-        $recentOrders = $user->orders()
+        $recentOrders = (clone $userOrders)
             ->with('items')
             ->latest()
             ->limit(3)
