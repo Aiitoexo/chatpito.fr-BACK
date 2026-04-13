@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Admin\StockController;
 use App\Http\Controllers\Api\Admin\VariantSupplierController;
 use App\Http\Controllers\Api\Admin\ImageUploadController;
 use App\Http\Controllers\Api\AddressController;
+use App\Http\Controllers\Api\ShippingController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\InvoiceController;
@@ -40,6 +41,9 @@ Route::get('/products/{product}/variants', [VariantController::class, 'index']);
 
 // Stripe webhook (sans middleware auth — Stripe appelle directement)
 Route::post('/webhooks/stripe', [StripeWebhookController::class, 'handle']);
+
+// Shipping — calcul frais de port
+Route::post('/shipping/calculate', [ShippingController::class, 'calculate']);
 
 // Checkout — création PaymentIntent
 Route::post('/checkout/payment-intent', [CheckoutController::class, 'createPaymentIntent']);
