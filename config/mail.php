@@ -111,8 +111,10 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => env('MAIL_FROM_ADDRESS', 'bonjour@chatpito.fr'),
+        'name' => env('MAIL_FROM_NAME', 'Chatpito.fr'),
     ],
+
+    'admin_address' => env('MAIL_ADMIN_ADDRESS', 'admin@chatpito.fr'),
 
 ];
