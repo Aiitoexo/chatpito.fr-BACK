@@ -77,12 +77,13 @@ class OrderController extends Controller
 
         $user = \App\Models\User::where('email', $request->email)->first();
 
-        if (!$user) {
-            return response()->json([]);
-        }
-
-        $orders = Order::where('user_id', $user->id)
-            ->with(['items.variant.product'])
+        $orders = Order::where(function ($query) use ($request, $user) {
+                $query->where('shipping_email', $request->email);
+                if ($user) {
+                    $query->orWhere('user_id', $user->id);
+                }
+            })
+            ->with(['items.variant.product', 'invoice'])
             ->orderBy('created_at', 'desc')
             ->get();
 
