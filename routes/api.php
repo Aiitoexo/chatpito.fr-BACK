@@ -54,7 +54,19 @@ Route::post('/coupons/apply', [CouponController::class, 'apply']);
 // Shipping — calcul frais de port
 Route::post('/shipping/calculate', [ShippingController::class, 'calculate']);
 
-// Checkout — création PaymentIntent
+// Checkout
+Route::post('/checkout/save-cart', function (\Illuminate\Http\Request $request) {
+    $validated = $request->validate([
+        'email' => 'required|email',
+        'items' => 'required|array',
+        'total' => 'required|numeric',
+    ]);
+    \App\Models\AbandonedCart::updateOrCreate(
+        ['email' => $validated['email']],
+        ['items' => $validated['items'], 'total' => $validated['total'], 'user_id' => $request->user()?->id]
+    );
+    return response()->json(['message' => 'ok']);
+});
 Route::post('/checkout/payment-intent', [CheckoutController::class, 'createPaymentIntent']);
 
 // Orders (public for guest checkout)
