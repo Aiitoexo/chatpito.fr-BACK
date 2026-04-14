@@ -132,6 +132,21 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     // Dashboard
     Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
 
+    // Import CSV
+    Route::post('/products/import', [Admin\AdminProductImportController::class, 'import']);
+
+    // Notifications
+    Route::get('/notifications', function () {
+        return response()->json(['data' => \App\Models\AdminNotification::latest('created_at')->limit(20)->get()]);
+    });
+    Route::get('/notifications/unread-count', function () {
+        return response()->json(['count' => \App\Models\AdminNotification::where('read', false)->count()]);
+    });
+    Route::patch('/notifications/mark-read', function () {
+        \App\Models\AdminNotification::where('read', false)->update(['read' => true]);
+        return response()->json(['message' => 'ok']);
+    });
+
     // Products CRUD
     Route::apiResource('products', AdminProductController::class);
 
