@@ -177,6 +177,17 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     // Activity logs
     Route::get('/logs', [Admin\ActivityLogController::class, 'index']);
 
+    // Shipping methods CRUD
+    Route::get('/shipping', [Admin\AdminShippingController::class, 'index']);
+    Route::post('/shipping', [Admin\AdminShippingController::class, 'store']);
+    Route::put('/shipping/{id}', [Admin\AdminShippingController::class, 'update']);
+    Route::delete('/shipping/{id}', [Admin\AdminShippingController::class, 'destroy']);
+    Route::patch('/shipping/{id}/toggle', [Admin\AdminShippingController::class, 'toggle']);
+
+    // Clients
+    Route::get('/clients', [Admin\AdminClientController::class, 'index']);
+    Route::get('/clients/{id}', [Admin\AdminClientController::class, 'show']);
+
     // SAV / Returns
     Route::get('/returns', [Admin\AdminReturnController::class, 'index']);
     Route::get('/returns/{id}', [Admin\AdminReturnController::class, 'show']);
